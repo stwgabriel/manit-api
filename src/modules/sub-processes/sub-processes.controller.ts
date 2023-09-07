@@ -6,19 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
 
 import { SubProcessesService } from './sub-processes.service';
-import { CreateSubProcessDto } from './dto/create-sub-process.dto';
-import { UpdateSubProcessDto } from './dto/update-sub-process.dto';
 
 @Controller('sub-processes')
 export class SubProcessesController {
   constructor(private readonly subProcessesService: SubProcessesService) {}
 
   @Post()
-  create(@Body() createSubProcessDto: CreateSubProcessDto) {
-    return this.subProcessesService.create(createSubProcessDto);
+  create(@Request() { userId }, @Body() createSubProcessDto) {
+    return this.subProcessesService.create({
+      ...createSubProcessDto,
+      userId,
+    });
   }
 
   @Get()
@@ -33,11 +35,13 @@ export class SubProcessesController {
 
   @Patch(':id')
   update(
+    @Request() { userId },
     @Param('id') id: string,
-    @Body() updateSubProcessDto: UpdateSubProcessDto,
+    @Body() updateSubProcessDto,
   ) {
     return this.subProcessesService.update({
       id,
+      userId,
       ...updateSubProcessDto,
     });
   }

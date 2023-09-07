@@ -17,7 +17,7 @@ import { AddUserToTeamDto } from './dto/add-user-to-team.dto';
 
 @Controller('teams')
 export class TeamsController {
-  constructor(private readonly teamsService: TeamsService) {}
+  constructor(private readonly teamsService: TeamsService) { }
 
   @Get()
   findAll(@Request() { userId }: any) {
@@ -31,7 +31,6 @@ export class TeamsController {
 
   @Post(':id')
   addUser(@Param('id') id: string, @Body() userToBeAdded: { email: string }) {
-    console.log(id, userToBeAdded);
     return this.teamsService.addUser({
       id,
       ...userToBeAdded,

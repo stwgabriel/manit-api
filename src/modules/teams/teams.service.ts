@@ -13,7 +13,7 @@ export class TeamsService {
   constructor(
     private readonly teamsRepository: TeamsRepository,
     private readonly usersRepository: UsersRepository,
-  ) { }
+  ) {}
 
   async create({ user, name, processes }: CreateTeamDto) {
     const team = await this.teamsRepository.create({
@@ -46,9 +46,16 @@ export class TeamsService {
                 stage: true,
               },
             },
-            team: {
-              include: {
-                users: true,
+            team: true,
+          },
+        },
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
               },
             },
           },

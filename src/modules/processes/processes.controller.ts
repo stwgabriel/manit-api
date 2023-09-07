@@ -6,18 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
+
 import { ProcessesService } from './processes.service';
-import { CreateProcessDto } from './dto/create-process.dto';
-import { UpdateProcessDto } from './dto/update-process.dto';
 
 @Controller('processes')
 export class ProcessesController {
-  constructor(private readonly processesService: ProcessesService) { }
+  constructor(private readonly processesService: ProcessesService) {}
 
   @Post()
-  create(@Body() createProcessDto: CreateProcessDto) {
-    return this.processesService.create(createProcessDto);
+  create(@Request() { userId }, @Body() createProcessDto) {
+    return this.processesService.create({ userId, ...createProcessDto });
   }
 
   @Get()
@@ -31,9 +31,7 @@ export class ProcessesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProcessDto: UpdateProcessDto) {
-    console.log(id);
-
+  update(@Param('id') id: string, @Body() updateProcessDto) {
     return this.processesService.update({
       id,
       ...updateProcessDto,

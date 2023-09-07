@@ -4,7 +4,7 @@ import { type Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
-export class SubProcessRepository {
+export class SubProcessesRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   create(createDto: Prisma.SubProcessCreateArgs) {

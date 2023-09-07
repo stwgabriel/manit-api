@@ -7,7 +7,7 @@ import { createStageDto } from './dto/create-stage.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) { }
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   createStage({ id, name, color }: createStageDto) {
     return this.usersRepository.update({
