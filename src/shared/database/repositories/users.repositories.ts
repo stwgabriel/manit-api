@@ -11,6 +11,10 @@ export class UsersRepository {
     return this.prismaService.user.create(createDto);
   }
 
+  update(updateDto: Prisma.UserUpdateArgs) {
+    return this.prismaService.user.update(updateDto);
+  }
+
   findUnique(findUniqueArgs: Prisma.UserFindUniqueArgs) {
     return this.prismaService.user.findUnique(findUniqueArgs);
   }

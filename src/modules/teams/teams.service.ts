@@ -5,10 +5,15 @@ import { TeamsRepository } from 'src/shared/database/repositories/teams.reposito
 
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { AddUserToTeamDto } from './dto/add-user-to-team.dto';
+import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 
 @Injectable()
 export class TeamsService {
-  constructor(private readonly teamsRepository: TeamsRepository) {}
+  constructor(
+    private readonly teamsRepository: TeamsRepository,
+    private readonly usersRepository: UsersRepository,
+  ) { }
 
   async create({ user, name, processes }: CreateTeamDto) {
     const team = await this.teamsRepository.create({
@@ -32,22 +37,18 @@ export class TeamsService {
 
   async findAll({ id }: IdDto) {
     const teams = await this.teamsRepository.findMany({
-      select: {
-        id: true,
-        name: true,
+      include: {
         processes: {
-          select: {
-            name: true,
-            subProcess: true,
-          },
-        },
-        users: {
-          select: {
-            users: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
+          include: {
+            stage: true,
+            subProcesses: {
+              include: {
+                stage: true,
+              },
+            },
+            team: {
+              include: {
+                users: true,
               },
             },
           },
@@ -61,6 +62,10 @@ export class TeamsService {
         },
       },
     });
+
+    if (teams.length <= 0) {
+      throw new NotFoundException('No teams found');
+    }
     return teams;
   }
 
@@ -69,28 +74,25 @@ export class TeamsService {
       where: {
         id,
       },
-      select: {
-        id: true,
-        name: true,
+      include: {
         processes: {
-          select: {
-            id: true,
-            name: true,
-            subProcess: {
-              select: {
-                id: true,
-                name: true,
+          include: {
+            stage: true,
+            subProcesses: {
+              include: {
+                stage: true,
               },
             },
+            team: true,
           },
         },
         users: {
-          select: {
-            users: {
+          include: {
+            user: {
               select: {
                 id: true,
-                name: true,
                 email: true,
+                name: true,
               },
             },
           },
@@ -114,6 +116,64 @@ export class TeamsService {
       where: { id },
       data: {
         name,
+      },
+    });
+
+    return updatedTeam;
+  }
+
+  async addUser({ id, email }: AddUserToTeamDto) {
+    const existingTeam = await this.teamsRepository.findUnique({
+      where: { id },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existingTeam) {
+      throw new NotFoundException('Team not found');
+    }
+
+    const user = await this.usersRepository.findUnique({
+      where: { email },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedTeam = await this.teamsRepository.update({
+      where: { id },
+      data: {
+        users: {
+          create: {
+            userId: user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        processes: {
+          select: {
+            name: true,
+            // subProcesses: true,
+          },
+        },
+        users: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
       },
     });
 

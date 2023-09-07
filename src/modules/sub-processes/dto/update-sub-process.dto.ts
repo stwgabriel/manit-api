@@ -4,8 +4,5 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { CreateSubProcessDto } from './create-sub-process.dto';
 
 export class UpdateSubProcessDto extends PartialType(CreateSubProcessDto) {
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
   id: string;
 }

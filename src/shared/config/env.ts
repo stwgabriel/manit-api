@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNotEmpty, IsString, NotEquals, validateSync } from 'class-validator';
+import { IsNotEmpty, IsString, validateSync } from 'class-validator';
 
 class Env {
   @IsString()
@@ -8,7 +8,6 @@ class Env {
 
   @IsString()
   @IsNotEmpty()
-  @NotEquals('unsecured_jwt_secret')
   jwtSecret: string;
 }
 

@@ -8,13 +8,14 @@ import { UpdateSubProcessDto } from './dto/update-sub-process.dto';
 
 @Injectable()
 export class SubProcessesService {
-  constructor(private readonly subProcessRepository: SubProcessRepository) {}
+  constructor(private readonly subProcessRepository: SubProcessRepository) { }
 
-  async create({ name, processId }: CreateSubProcessDto) {
+  async create({ name, processId, stageId }: CreateSubProcessDto) {
     const subProcess = await this.subProcessRepository.create({
       data: {
         name,
         processId,
+        stageId,
       },
     });
 
@@ -42,7 +43,7 @@ export class SubProcessesService {
     return subProcess;
   }
 
-  async update({ id, name }: UpdateSubProcessDto) {
+  async update({ id, name, stageId }: UpdateSubProcessDto) {
     const existingSubProcess = await this.subProcessRepository.findUnique({
       select: { id: true },
       where: { id },
@@ -56,6 +57,7 @@ export class SubProcessesService {
       where: { id },
       data: {
         name,
+        stageId,
       },
     });
 

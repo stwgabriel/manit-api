@@ -6,18 +6,19 @@ import { IdDto } from 'src/shared/database/dto';
 
 @Injectable()
 export class ProcessesService {
-  constructor(private readonly processRepository: ProcessRepository) {}
+  constructor(private readonly processRepository: ProcessRepository) { }
 
-  async create({ name, teamId, userId }: CreateProcessDto) {
-    const peocess = await this.processRepository.create({
+  async create({ name, stageId, teamId, userId }: CreateProcessDto) {
+    const process = await this.processRepository.create({
       data: {
         name,
+        stageId,
         teamId,
         userId,
       },
     });
 
-    return peocess;
+    return process;
   }
 
   async findAll({ id }: IdDto) {
@@ -31,17 +32,17 @@ export class ProcessesService {
   }
 
   async findOne({ id }: IdDto) {
-    const peocess = await this.processRepository.findUnique({
+    const process = await this.processRepository.findUnique({
       where: {
         id,
       },
       select: {},
     });
 
-    return peocess;
+    return process;
   }
 
-  async update({ id, name }: UpdateProcessDto) {
+  async update({ id, name, stageId }: UpdateProcessDto) {
     const existingProcess = await this.processRepository.findUnique({
       where: { id },
     });
@@ -54,6 +55,7 @@ export class ProcessesService {
       where: { id },
       data: {
         name,
+        stageId,
       },
     });
 
@@ -61,8 +63,6 @@ export class ProcessesService {
   }
 
   async delete({ id }: IdDto) {
-    await this.processRepository.delete({ where: { id } });
-
-    return 'process deleted';
+    return await this.processRepository.delete({ where: { id } });
   }
 }

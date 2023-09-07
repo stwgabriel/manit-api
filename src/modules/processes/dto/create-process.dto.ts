@@ -7,6 +7,10 @@ export class CreateProcessDto {
 
   @IsString()
   @IsNotEmpty()
+  stageId: string;
+
+  @IsString()
+  @IsNotEmpty()
   userId: string;
 
   @IsString()

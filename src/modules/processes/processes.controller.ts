@@ -13,7 +13,7 @@ import { UpdateProcessDto } from './dto/update-process.dto';
 
 @Controller('processes')
 export class ProcessesController {
-  constructor(private readonly processesService: ProcessesService) {}
+  constructor(private readonly processesService: ProcessesService) { }
 
   @Post()
   create(@Body() createProcessDto: CreateProcessDto) {
@@ -32,6 +32,8 @@ export class ProcessesController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProcessDto: UpdateProcessDto) {
+    console.log(id);
+
     return this.processesService.update({
       id,
       ...updateProcessDto,

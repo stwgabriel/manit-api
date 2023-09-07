@@ -1,15 +1,15 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateSubProcessDto {
+export class createStageDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @IsString()
   @IsNotEmpty()
-  processId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  stageId: string;
+  color: string;
 }

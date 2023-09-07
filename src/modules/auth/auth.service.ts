@@ -23,45 +23,9 @@ export class AuthService {
       where: {
         email,
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true,
-        teams: {
-          select: {
-            teams: {
-              select: {
-                id: true,
-                name: true,
-                processes: {
-                  select: {
-                    id: true,
-                    name: true,
-                    subProcess: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        processes: {
-          select: {
-            id: true,
-            name: true,
-            subProcess: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
+      include: {
+        processes: true,
+        stages: true,
       },
     });
 
@@ -79,7 +43,7 @@ export class AuthService {
 
     return {
       ...user,
-      password: null,
+      password: 'null',
       accessToken,
     };
   }
@@ -94,51 +58,36 @@ export class AuthService {
 
     const hashedPassword = await hash(password, 11);
 
+    const stages = [
+      { name: 'aberto', color: '#DADADA' },
+      { name: 'iniciado', color: '#CCADEB' },
+      { name: 'pendente', color: '#F0D775' },
+      { name: 'completo', color: '#91F075' },
+    ];
+
     const user = await this.usersRepository.create({
       data: {
         name,
         email,
         password: hashedPassword,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true,
         teams: {
-          select: {
-            teams: {
-              select: {
-                id: true,
-                name: true,
-                processes: {
-                  select: {
-                    id: true,
-                    name: true,
-                    subProcess: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
-                },
+          create: {
+            team: {
+              create: {
+                name: 'Exemplo de time',
               },
             },
           },
         },
-        processes: {
-          select: {
-            id: true,
-            name: true,
-            subProcess: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
+        stages: {
+          createMany: {
+            data: stages,
           },
         },
+      },
+      include: {
+        processes: true,
+        stages: true,
       },
     });
 
@@ -146,6 +95,7 @@ export class AuthService {
 
     return {
       ...user,
+      password: null,
       accessToken,
     };
   }
